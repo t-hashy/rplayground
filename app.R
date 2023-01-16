@@ -12,14 +12,13 @@ library(tidyverse)
 library(DT) # Interactive data table
 
 # Credentials
-credentials <- data.frame(
-  user = c("takahiro", "admin"), # mandatory
-  password = c("hashimoto", "12345"), # mandatory
-  start = c("2019-04-15"), # optinal (all others)
-  expire = c(NA, "2019-12-31"),
-  admin = c(FALSE, TRUE),
-  comment = "Simple and secure authentification mechanism for single ‘Shiny’ applications.",
-  stringsAsFactors = FALSE
+credentials <- read_sheet("1uNKILtVDa8h4uLNk914mn2ecZCSQotBE3gz_auRO2u4","Credentials")
+
+set_labels(
+  "language" = "en",
+  "Please authenticate" = "You have to log in",
+  "Username :" = "What is your name :",
+  "Password :" = "Enter your Password :"
 )
 
 # Import data
@@ -44,7 +43,7 @@ data <- df_ag %>%
 ui <- navbarPage(
   title = "Surplus",
   
-  header = uiOutput("header"),
+  header = verbatimTextOutput("header"),
 
   # Calendar
   tabPanel(
@@ -67,12 +66,13 @@ server <- function(input,output){
   
   # Credentials
   res_auth <- secure_server(
-    check_credentials = check_credentials(credentials)
+    check_credentials = check_credentials(credentials),
+    keep_token = TRUE
   )
   
   # Header
-  output$header <- renderUI(
-    tags$p(paste("user:",res_auth$user))
+  output$header <- renderText(
+    res_auth$user
   )
   
   output$calendar <- renderFullcalendar({
