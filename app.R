@@ -12,7 +12,8 @@ library(tidyverse)
 library(DT) # Interactive data table
 
 # Credentials
-credentials <- read_sheet("1uNKILtVDa8h4uLNk914mn2ecZCSQotBE3gz_auRO2u4","Credentials")
+credentials <- read_sheet("1uNKILtVDa8h4uLNk914mn2ecZCSQotBE3gz_auRO2u4","Credentials") %>%
+  memoise()
 
 set_labels(
   "language" = "en",
